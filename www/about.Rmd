@@ -1,0 +1,17 @@
+---
+title: "Welcome!"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br><br>
+This app will help you identify both the native range of CWRs in Canada, and the extent of those species’ ranges that are conserved ex situ in botanic gardens of Canadian CWRs. Botanical gardens can provide a unique role in both conserving CWRs while also educating the public on the importance of CWRs through their outreach and public engagement programs. 
+          
+[Canadian CWR master-list](https://github.com/jensculrich/CWR_project/blob/main/all_garden_accessions_with_geo_data.csv).
+
+
+It has been made with [shiny](https://shiny.rstudio.com/) and you may find the code on [github](https://github.com/jensculrich/CWR_Shiny).
+
