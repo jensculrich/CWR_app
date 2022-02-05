@@ -21,7 +21,6 @@ right: Nationally imperiled CWR of blueberry, <i> Vaccinium stamineum  </i> ("de
 You can access our inventory of Canadian CWR and WUS 
 [here](https://github.com/jensculrich/Canadian_CWR_inventory_and_conservation/blob/main/Input_Data_and_Files/inventory.csv).
 
-This app has been made with [RShiny](https://shiny.rstudio.com/) and you may
-find the code on [github](https://github.com/jensculrich/cwr_shiny_app).
+This app has been made with [RShiny](https://shiny.rstudio.com/) and with underlying construction code stored on [github](https://github.com/jensculrich/CWR_app).
 
 
