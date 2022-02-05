@@ -10,7 +10,7 @@ To ensure the availability of these important genetic resources for crop breedin
 
 Canadian CWR that are critically imperiled include relatives of walnut, blueberry, quinoa, amaranth, flax, chestnut, currant and gooseberry, lupin, wheat, cup-plant and proso-millet, as well as several forage and feed crops. Imperiled Canadian WUS that require urgent attention include (amongst others) soapweed-yucca, deltoid balsamroot, cherry-birch, red-mulberry and over twenty different hawthorn species, subspecies and varieties (click on the "CWR Conservation" tab and search for these relatives for more information).
 
-### Towards an Integrative Strategy for Conservation of CWR and WUS in Canada
+### Towards Integrated Conservation of CWR and WUS in Canada
 To understand the taxonomy and distribution of CWR and WUS in Canada we assembled [a national inventory]() of these plants. 
 
 We next aimed to identify the baseline conservation of these important plants in <i> ex situ </i> (away from home) conservation systems; in national North American genebanks and in the national network of botanical garden collections. These <i> ex situ </i> conservation collections protect samples of the genetic diversity that is distributed among wild populations of CWR and WUS, and this is especially important for conserving the genetic diversity of those CWR and WUS that are particulalry vulnerable in their native habitats. <i> Ex situ </i> conservation also facilities distribution of these resources, connecting plant breeders with the traits and genetic diversity that is found in wild-populations. Living collections of CWR and WUS that are displayed in botanical gardens may also serve to raise broader public awareness of the values and threats to CWR and WUS.
