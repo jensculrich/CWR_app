@@ -2,7 +2,7 @@
 
 <br> 
 
-<i> Conservation of Canadian Crop Wild Relatives (CWR) </i> is an app tool that will enable you to explore the diversity of CWR and WUS in Canada. 
+<i> Conservation of Crop Wild Relatives (CWR) and Wild-utilized Plants (WUS) in Canada </i> is an app tool that will enable you to explore the diversity of CWR and WUS in Canada. 
 
 Learn more about CWR and WUS on the "What are CWR?" tab. Explore diversity on the "Find Native CWR" and "CWR Conservation" tabs
 

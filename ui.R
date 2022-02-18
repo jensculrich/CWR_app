@@ -3,6 +3,7 @@
 ###########################
 
 # Written by Jens Ulrich and Erika Luna Perez
+# February 2022
 
 ###########################
 # LIBRARIES               #
@@ -63,7 +64,7 @@ ui <- fluidPage(
     
     skin = "purple",
     
-    dashboardHeader(title = "Conservation of Canadian Crop Wild Relatives (CWR)", titleWidth = 500),
+    dashboardHeader(title = "Conservation of Crop Wild Relatives (CWR) and Wild-utilized Plants (WUS) in Canada", titleWidth = 1000),
     
     dashboardSidebar(
       
@@ -107,10 +108,19 @@ ui <- fluidPage(
                                 choices = c("Food crop relatives", "Forest resources",
                                             "Forage and feed crops", "Wild-utilized plant species")
                                 ), # end select input
+                    # user chooses to view map with ecoregion or province boundaries displayed
+                    selectInput("inNativeProvincesOrEcoregions", "Choose a Geographic Display",
+                                choices = c("Provinces", "Ecoregions")),
+                    # want to update this so it's dependnet on users choice of provinces v. ecoregions
+                    selectInput("inRegion", "Filter CWR List by a Region:", 
+                                choices = c("Alberta", "British Columbia", "Manitoba", "Newfoundland and Labrador",
+                                            "New Brunswick", "Northwest Territories", "Nova Scotia", "Nunavut", 
+                                            "Ontario", "Prince Edward Island", "Quebec", 
+                                            "Saskatchewan", "Yukon")), 
                     # user may choose an ecoregion of interest (or click on one from the map)
-                    selectInput("inRegion", "Filter CWR List by a Region:",
-                                choices = ecoregion_gap_table_t$ECO_NAME
-                                ), # end select input
+                    # selectInput("inRegion", "Filter CWR List by a Region:",
+                    #             choices = ecoregion_gap_table_t$ECO_NAME
+                    #             ), # end select input
                   ), # end box
                     
                   box(#title = "Range map", solidHeader = T,

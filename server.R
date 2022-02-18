@@ -3,6 +3,7 @@
 ###############################
 
 # Written by Jens Ulrich and Erika Luna Perez
+# February 2022
 
 ########################################
 # DATA WRANGLING AND SUPPORT FUNCTIONS #
@@ -50,6 +51,25 @@ shinyServer(function(input, output, session){
     
   })
   
+  filter_data_province <- reactive({
+    x <- input$inSelectedGroup
+    
+    if(x == "Food crop relatives"){
+      filtered_province_gap_table <- province_gap_table_t %>%
+        filter(TIER == 1)
+    } else if(x == "Forest resources"){
+      filtered_province_gap_table <- province_gap_table_t %>%
+        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources")
+    } else if(x == "Forage and feed crops"){
+      filtered_province_gap_table <- province_gap_table_t %>%
+        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed")
+    } else {
+      filtered_province_gap_table <- province_gap_table_t %>%
+        filter(WUS == "Y")
+    }
+    
+  })
+  
   # allow user to click on a polygon (region) and filter the CWR table to that region
   observe({ 
     
@@ -57,61 +77,130 @@ shinyServer(function(input, output, session){
     event <- input$choroplethPlot_shape_click
     updateSelectInput(session, inputId = "inRegion", selected = event$id)
     
+    z <- input$inNativeProvincesOrEcoregions
+    if(z == "Ecoregions"){
+      updateSelectInput(session, "inRegion", 
+                        choices = ecoregion_gap_table$ECO_NAME,
+                        selected = NULL)
+      
+      ## give the user the ability to choose by hovering on the map
+      event <- input$choroplethPlot_shape_click
+      updateSelectInput(session, inputId = "inRegion", selected = event$id)
+    } else {z
+      updateSelectInput(session, "inRegion", 
+                        choices = province_gap_table_t$PROVINCE,
+                        selected = NULL)
+      
+      ## give the user the ability to choose by hovering on the map
+      event <- input$choroplethPlot_shape_click
+      updateSelectInput(session, inputId = "inRegion", selected = event$id)
+    } 
+    
   }) 
   
   # native range tab outputs: plot and table
   
   # get plot data
   plotDataNativeRanges <- reactive({
-    
-    filtered_data <- filter_data()
-    
-    native_occurrence_heatmap_ecoregion <- filtered_data %>%
-      # group by ecoregion
-      dplyr::group_by(ECO_NAME) %>%
-      filter(FINEST_TAXON_RESOLUTION == "Y") %>%
-      # distinct (since when there are >1 accessions for a species from the province the 
-      # row gets expanded. We just want a count of one row per species found in the province)
-      distinct(TAXON, .keep_all = TRUE) %>%
-      # tally the number of species
-      add_tally() %>%
-      rename("variable" = "n") 
-    
-    native_occurrence_sf_ecoregions <- tigris::geo_join(canada_ecoregions_geojson, native_occurrence_heatmap_ecoregion, 
-                                                        by_sp = "ECO_NAME", by_df = "ECO_NAME")
-    
-    native_occurrence_sf_ecoregions <- native_occurrence_sf_ecoregions %>%
-      rename("region" = "ECO_NAME")
+    if(input$inNativeProvincesOrEcoregions == "Provinces"){
+      filtered_data <- filter_data_province()
+      
+      native_occurrence_heatmap_ecoregion <- filtered_data %>%
+        # group by ecoregion
+        dplyr::group_by(PROVINCE) %>%
+        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
+        # distinct (since when there are >1 accessions for a species from the province the 
+        # row gets expanded. We just want a count of one row per species found in the province)
+        distinct(TAXON, .keep_all = TRUE) %>%
+        # tally the number of species
+        add_tally() %>%
+        rename("variable" = "n") 
+      
+      native_occurrence_sf_ecoregions <- tigris::geo_join(canada_provinces_geojson, native_occurrence_heatmap_ecoregion, 
+                                                          by_sp = "name", by_df = "PROVINCE")
+      
+      native_occurrence_sf_ecoregions <- native_occurrence_sf_ecoregions %>%
+        rename("region" = "name")
+      
+    } else{ # end if (provinces are chosen)
+      filtered_data <- filter_data()
+      
+      native_occurrence_heatmap_ecoregion <- filtered_data %>%
+        # group by ecoregion
+        dplyr::group_by(ECO_NAME) %>%
+        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
+        # distinct (since when there are >1 accessions for a species from the province the 
+        # row gets expanded. We just want a count of one row per species found in the province)
+        distinct(TAXON, .keep_all = TRUE) %>%
+        # tally the number of species
+        add_tally() %>%
+        rename("variable" = "n") 
+      
+      native_occurrence_sf_ecoregions <- tigris::geo_join(canada_ecoregions_geojson, native_occurrence_heatmap_ecoregion, 
+                                                          by_sp = "ECO_NAME", by_df = "ECO_NAME")
+      
+      native_occurrence_sf_ecoregions <- native_occurrence_sf_ecoregions %>%
+        rename("region" = "ECO_NAME")
+    } # end else (ecoregions are chosen)
     
   }) # end get plot data
   
   # get table data
   tableDataNativeRanges <- reactive({
     
-    filtered_data <- filter_data()
-    
-    native_occurrence_heatmap_ecoregion <- filtered_data %>%
-      # filter the table to the selected region
-      filter(ECO_NAME == input$inRegion) %>%
-      # group by ecoregion
-      dplyr::group_by(ECO_NAME) %>%
-      filter(FINEST_TAXON_RESOLUTION == "Y") %>%
-      # distinct (since when there are >1 accessions for a species from the province the 
-      # row gets expanded. We just want a count of one row per species found in the province)
-      distinct(TAXON, .keep_all = TRUE) %>%
-      # tally the number of species
-      add_tally() %>%
-      rename("variable" = "n") %>%
+    if(input$inNativeProvincesOrEcoregions == "Provinces"){
+      filtered_data <- filter_data_province()
       
-      dplyr::select(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-                    PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                    TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC) %>%
+      native_occurrence_heatmap_ecoregion <- filtered_data %>%
+        # filter the table to the selected region
+        filter(PROVINCE == input$inRegion) %>%
+        # group by ecoregion
+        dplyr::group_by(PROVINCE) %>%
+        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
+        # distinct (since when there are >1 accessions for a species from the province the 
+        # row gets expanded. We just want a count of one row per species found in the province)
+        distinct(TAXON, .keep_all = TRUE) %>%
+        # tally the number of species
+        add_tally() %>%
+        rename("variable" = "n") %>%
+        
+        dplyr::select(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
+                      PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC) %>%
+        
+        relocate(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
+                 PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                 TAXON, 
+                 NATIVE, ROUNDED_N_RANK,
+                 COSEWIC_DESC) 
       
-      relocate(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
-               PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-               TAXON, 
-               NATIVE, ROUNDED_N_RANK,
-               COSEWIC_DESC) 
+    } else{
+      filtered_data <- filter_data()
+      
+      native_occurrence_heatmap_ecoregion <- filtered_data %>%
+        # filter the table to the selected region
+        filter(ECO_NAME == input$inRegion) %>%
+        # group by ecoregion
+        dplyr::group_by(ECO_NAME) %>%
+        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
+        # distinct (since when there are >1 accessions for a species from the province the 
+        # row gets expanded. We just want a count of one row per species found in the province)
+        distinct(TAXON, .keep_all = TRUE) %>%
+        # tally the number of species
+        add_tally() %>%
+        rename("variable" = "n") %>%
+        
+        dplyr::select(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
+                      PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC) %>%
+        
+        relocate(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
+                 PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                 TAXON, 
+                 NATIVE, ROUNDED_N_RANK,
+                 COSEWIC_DESC) 
+      
+    } # end else (ecoregions are chosen)
     
   }) # end get table data
   
@@ -131,6 +220,12 @@ shinyServer(function(input, output, session){
       sep="") %>%
       lapply(htmltools::HTML)
     
+    if(input$inSelectedGroup == "Wild-utilized plant species") {
+      plot_title = "WUS"
+    } else{
+      plot_title = "CWR"
+    }
+    
     # Basic choropleth with leaflet
     leaflet(plotDataNativeRanges()) %>% 
       addTiles()  %>% 
@@ -140,7 +235,7 @@ shinyServer(function(input, output, session){
                   color = ~colorNumeric("YlOrBr", variable)(variable),
                   label = mytext,
                   layerId = ~region) %>%
-      addLegend( pal=mypalette, values=~variable, opacity=0.9, title = "CWR", position = "bottomleft" )
+      addLegend( pal=mypalette, values=~variable, opacity=0.9, title = plot_title, position = "bottomleft" )
     
   }) # end renderPlot
   
