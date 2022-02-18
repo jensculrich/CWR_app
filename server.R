@@ -13,6 +13,8 @@ canada_ecoregions_geojson <- st_read("data/canada_ecoregions_clipped.geojson", q
 canada_provinces_geojson <- st_read("data/canada_provinces.geojson", quiet = TRUE)
 ecoregion_gap_table <- as_tibble(read.csv("data/ecoregion_gap_table_by_species.csv"))
 ecoregion_gap_table_t <- as_tibble(read.csv("data/ecoregion_gap_table_by_taxon.csv"))
+province_gap_table_t <- as_tibble(read.csv("data/province_gap_table_by_taxon.csv"))
+
 
 ################
 # SERVER LOGIC #

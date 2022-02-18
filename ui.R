@@ -53,7 +53,7 @@ dbHeader <- dashboardHeader(title = "My Dashboard",
 # LOAD UI #
 ###########
 
-# ui structure: one navbar page with 4 tab panels
+# ui structure: one navbar page with 5 tab panels
 
 ui <- fluidPage(
   
@@ -72,7 +72,7 @@ ui <- fluidPage(
         menuItem("What are CWR?", tabName = "about", icon = icon("seedling")),
         menuItem("Find Native CWR", tabName = "find", icon = icon("thumbtack")),
         menuItem("CWR Conservation", tabName = "explore", icon = icon("map marked alt")),
-        menuItem("Acknowledgements", tabName = "aknow", icon = icon("tasks"))
+        menuItem("About", tabName = "aknow", icon = icon("tasks"))
         
       ) # end sidebarMenu
       
