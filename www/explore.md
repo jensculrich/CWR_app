@@ -4,4 +4,4 @@ This section allows you to explore the conservation status of native and natural
 
 Ex situ collections considered here are a meta-collection assembled from national genebanks (G) (Plant Genetic Resources Canada, National Tree Seed Centre - Canada, University of Saskatchewan Prairie Fruit Genebank - Canada, and the United States Dept. of Agriculture Nationa Germplasm System - United States) as well as from 7 major Canadian botanical gardens (BG).
 
-This meta-collection was assembled in 2021.
+This meta-collection of genebank and botanical garden CWR and WUS accessions was assembled in 2021.

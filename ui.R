@@ -149,7 +149,7 @@ ui <- fluidPage(
                                 choices = "", selected = ""
                                 ), # end select input
                     # user chooses a crop of interest
-                    selectInput("inSelectedCrop", "Select a Crop", 
+                    selectInput("inSelectedCrop", "Select a Crop or WUS", 
                                 choices = "", selected = ""
                                 ), # end select input
                     # user chooses a CWR (filtered to match the selected crop)

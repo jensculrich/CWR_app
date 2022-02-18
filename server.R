@@ -40,10 +40,14 @@ shinyServer(function(input, output, session){
         filter(TIER == 1)
     } else if(x == "Forest resources"){
       filtered_ecoregion_gap_table <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources")
+        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources" |
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
+        mutate(PRIMARY_ASSOCIATED_CROP_TYPE_SPECIFIC_1 = "Forest Resources")
     } else if(x == "Forage and feed crops"){
       filtered_ecoregion_gap_table <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed")
+        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed" | 
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forage and Feed") %>%
+        mutate(PRIMARY_ASSOCIATED_CROP_TYPE_SPECIFIC_1 = "Forage and Feed")
     } else {
       filtered_ecoregion_gap_table <- ecoregion_gap_table_t %>%
         filter(WUS == "Y")
@@ -59,10 +63,14 @@ shinyServer(function(input, output, session){
         filter(TIER == 1)
     } else if(x == "Forest resources"){
       filtered_province_gap_table <- province_gap_table_t %>%
-        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources")
+        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources" |
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
+        mutate(PRIMARY_ASSOCIATED_CROP_TYPE_SPECIFIC_1 = "Forest Resources")
     } else if(x == "Forage and feed crops"){
       filtered_province_gap_table <- province_gap_table_t %>%
-        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed")
+        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed" | 
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forage and Feed") %>%
+        mutate(PRIMARY_ASSOCIATED_CROP_TYPE_SPECIFIC_1 = "Forage and Feed")
     } else {
       filtered_province_gap_table <- province_gap_table_t %>%
         filter(WUS == "Y")
@@ -231,7 +239,7 @@ shinyServer(function(input, output, session){
     # Basic choropleth with leaflet
     leaflet(plotDataNativeRanges()) %>% 
       addTiles()  %>% 
-      setView( lat=60, lng=-98 , zoom=3) %>%
+      setView(lat=60, lng=-98 , zoom=3) %>%
       addPolygons(fillOpacity = 0.5, 
                   smoothFactor = 0.5, 
                   color = ~colorNumeric("YlOrBr", variable)(variable),
@@ -239,9 +247,31 @@ shinyServer(function(input, output, session){
                   layerId = ~region,
                   highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
                                                       bringToFront = T)) %>%
-      addLegend( pal=mypalette, values=~variable, opacity=0.9, title = plot_title, position = "bottomleft" )
+      addLegend(pal=mypalette, values=~variable, 
+                opacity=0.9, title = plot_title, position = "bottomleft" )
   
   }) # end renderPlot
+  
+  observe({
+    
+    # highlighted_region = input$inRegion
+    mydat <- plotDataNativeRanges()
+    filtered_dat <- mydat %>%
+      filter(region == input$inRegion)
+    
+    leafletProxy("choroplethPlot", data = mydat) %>%
+        addPolygons(fillOpacity = 0.5, 
+                smoothFactor = 0.5, 
+                color = ~colorNumeric("YlOrBr", variable)(variable),
+                layerId = ~region,
+                highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
+                                                    bringToFront = T))
+    
+    leafletProxy("choroplethPlot", data = filtered_dat) %>%
+      addPolygons(layerId = ~region)
+      
+  
+  })
   
   output$nativeRangeTable <- DT::renderDataTable({
     datatable(tableDataNativeRanges(), rownames = FALSE,
@@ -266,10 +296,14 @@ shinyServer(function(input, output, session){
         filter(TIER == 1)
     } else if(xx == "Forest resources"){
       filtered_inventory <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources")
+        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources" |
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
+        mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forest Resources")
     } else if(xx == "Forage and feed crops"){
       filtered_inventory <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed")
+        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed" | 
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forage and Feed") %>%
+        mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forage and Feed")
     } else {
       filtered_inventory <- ecoregion_gap_table_t %>%
         filter(WUS == "Y")
@@ -280,24 +314,28 @@ shinyServer(function(input, output, session){
     filtered_inventory <- filtered_inventory[order(filtered_inventory$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1),]
     
     updateSelectInput(session, "inSelectedUse",
-                      label = paste("Select a Crop"),
+                      label = paste("Select a Crop Category"),
                       choices = filtered_inventory$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1
     ) # updateSelectInput
     
   })
   
   observe({
-    xx <- input$inSelectedGroup2
+    xxx <- input$inSelectedGroup2
     
-    if(xx == "Food crop relatives"){
+    if(xxx == "Food crop relatives"){
       filtered_inventory <- ecoregion_gap_table_t %>%
         filter(TIER == 1)
-    } else if(xx == "Forest resources"){
+    } else if(xxx == "Forest resources"){
       filtered_inventory <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources")
-    } else if(xx == "Forage and feed crops"){
+        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources"|
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
+        mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forest Resources")
+    } else if(xxx == "Forage and feed crops"){
       filtered_inventory <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed")
+        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed" | 
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forage and Feed") %>%
+        mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forage and Feed")
     } else {
       filtered_inventory <- ecoregion_gap_table_t %>%
         filter(WUS == "Y")
@@ -312,24 +350,28 @@ shinyServer(function(input, output, session){
     inventory_filtered <- inventory_filtered[order(inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME),]    
     # update select input so that CWRs choices are the subset related to the specified Crop
     updateSelectInput(session, "inSelectedCrop",
-                      label = paste("Select a Crop Wild Relative"),
+                      label = paste("Select a Crop or WUS genus"),
                       choices = inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME
     ) # updateSelectInput
     
   })
   
   observe({
-    xx <- input$inSelectedGroup2
+    xxxx <- input$inSelectedGroup2
     
-    if(xx == "Food crop relatives"){
+    if(xxxx == "Food crop relatives"){
       filtered_inventory <- ecoregion_gap_table_t %>%
         filter(TIER == 1)
-    } else if(xx == "Forest resources"){
+    } else if(xxxx == "Forest resources"){
       filtered_inventory <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources")
-    } else if(xx == "Forage and feed crops"){
+        filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources"|
+               PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
+        mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forest Resources")
+    } else if(xxxx == "Forage and feed crops"){
       filtered_inventory <- ecoregion_gap_table_t %>%
-        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed")
+        filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed" | 
+                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forage and Feed") %>%
+        mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forage and Feed")
     } else {
       filtered_inventory <- ecoregion_gap_table_t %>%
         filter(WUS == "Y")
@@ -344,7 +386,7 @@ shinyServer(function(input, output, session){
     inventory_filtered <- inventory_filtered[order(inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME),]    
     # update select input so that CWRs choices are the subset related to the specified Crop
     updateSelectInput(session, "inSelectedCWR",
-                      label = paste("Select a CWR or WUS"),
+                      label = paste("Select a CWR or WUS species"),
                       choices = inventory_filtered$SPECIES
     ) # updateSelectInput
     
