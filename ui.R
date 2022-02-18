@@ -116,11 +116,7 @@ ui <- fluidPage(
                                 choices = c("Alberta", "British Columbia", "Manitoba", "Newfoundland and Labrador",
                                             "New Brunswick", "Northwest Territories", "Nova Scotia", "Nunavut", 
                                             "Ontario", "Prince Edward Island", "Quebec", 
-                                            "Saskatchewan", "Yukon")), 
-                    # user may choose an ecoregion of interest (or click on one from the map)
-                    # selectInput("inRegion", "Filter CWR List by a Region:",
-                    #             choices = ecoregion_gap_table_t$ECO_NAME
-                    #             ), # end select input
+                                            "Saskatchewan", "Yukon")),
                   ), # end box
                     
                   box(#title = "Range map", solidHeader = T,

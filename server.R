@@ -12,9 +12,9 @@
 # Load required data and shapefiles for building reactive maps and data tables
 canada_ecoregions_geojson <- st_read("data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("data/canada_provinces.geojson", quiet = TRUE)
-ecoregion_gap_table <- as_tibble(read.csv("data/ecoregion_gap_table_by_species.csv"))
-ecoregion_gap_table_t <- as_tibble(read.csv("data/ecoregion_gap_table_by_taxon.csv"))
-province_gap_table_t <- as_tibble(read.csv("data/province_gap_table_by_taxon.csv"))
+ecoregion_gap_table <- as.data.frame(read.csv("data/ecoregion_gap_table_by_species.csv"))
+ecoregion_gap_table_t <- as.data.frame(read.csv("data/ecoregion_gap_table_by_taxon.csv"))
+province_gap_table_t <- as.data.frame(read.csv("data/province_gap_table_by_taxon.csv"))
 
 
 ################
@@ -79,6 +79,7 @@ shinyServer(function(input, output, session){
     
     z <- input$inNativeProvincesOrEcoregions
     if(z == "Ecoregions"){
+      ecoregion_gap_table <- with(ecoregion_gap_table,  ecoregion_gap_table[order(ECO_NAME) , ])
       updateSelectInput(session, "inRegion", 
                         choices = ecoregion_gap_table$ECO_NAME,
                         selected = NULL)
@@ -87,6 +88,7 @@ shinyServer(function(input, output, session){
       event <- input$choroplethPlot_shape_click
       updateSelectInput(session, inputId = "inRegion", selected = event$id)
     } else {z
+      province_gap_table_t <- with(province_gap_table_t,  province_gap_table_t[order(PROVINCE) , ])
       updateSelectInput(session, "inRegion", 
                         choices = province_gap_table_t$PROVINCE,
                         selected = NULL)
@@ -234,9 +236,11 @@ shinyServer(function(input, output, session){
                   smoothFactor = 0.5, 
                   color = ~colorNumeric("YlOrBr", variable)(variable),
                   label = mytext,
-                  layerId = ~region) %>%
+                  layerId = ~region,
+                  highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
+                                                      bringToFront = T)) %>%
       addLegend( pal=mypalette, values=~variable, opacity=0.9, title = plot_title, position = "bottomleft" )
-    
+  
   }) # end renderPlot
   
   output$nativeRangeTable <- DT::renderDataTable({
@@ -245,7 +249,8 @@ shinyServer(function(input, output, session){
                           "Crop", "Taxon", 
                           "Native", 
                           "Conservation Status",
-                          "COSEWIC Assessment"))
+                          "COSEWIC Assessment"),
+             options = list(scrollX = TRUE))
   }) # end renderTable
   
   ##########################
@@ -331,10 +336,10 @@ shinyServer(function(input, output, session){
     }
     
     # After user selects a group, user may select a crop from within that group
-    z <- input$inSelectedCrop
+    zz <- input$inSelectedCrop
     
     inventory_filtered <- filter(filtered_inventory, 
-                                 filtered_inventory$PRIMARY_ASSOCIATED_CROP_COMMON_NAME == z)
+                                 filtered_inventory$PRIMARY_ASSOCIATED_CROP_COMMON_NAME == zz)
     
     inventory_filtered <- inventory_filtered[order(inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME),]    
     # update select input so that CWRs choices are the subset related to the specified Crop
@@ -414,7 +419,7 @@ shinyServer(function(input, output, session){
       dplyr::select(total_accessions_sp,
                     garden_accessions_w_finest_taxon_res,
                     genebank_accessions_w_finest_taxon_res,
-                    ROUNDED_N_RANK)
+                    ROUNDED_N_RANK, COSEWIC_DESC)
   
   })
   
@@ -483,7 +488,9 @@ shinyServer(function(input, output, session){
               colnames = c("Total accessions in ex situ collections (species level)",
                            "Canadian, wild-origin accessions (BG)", 
                            "Canadian, wild-origin accessions (G)",
-                           "Conservation Status"))
+                           "Conservation Status",
+                           "COSEWIC Assessment"),
+              options = list(scrollX = TRUE))
   }) # end renderTable
   
 }) # server
