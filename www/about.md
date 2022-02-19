@@ -17,7 +17,7 @@ We next aimed to identify the baseline conservation of these important plants in
 
 Despite the role of <i> ex situ </i> conservation, complementation focusing on <i> in situ </i> conservation (conservation of wild-populations) is the only way to maintain diverse, healthy populations in the long-run. We encourage users of this web application to note CWR and WUS in their local regions (Click on the "Find Native CWR") that may be a focus for <i> in situ </i> conservation action, including increased protection and population monitoring. Such work should draw on coordination with diverse stakeholders and knowledgeholders including Indigenous Peoples, farmers and citizen scientists. Range maps for individual taxa (including information on baseline conservation in <i> ex situ </i> collections) can be found on the "CWR Conservation" Tab
 
-Please feel free to share this web tool in efforts to promote broader awareness of CWR and WUS in Canada. We hope that the information presented here provides a starting point for advancing integrative conservation and sustainable use of these valuable plants.
+Please feel free to share this web tool in efforts to promote broader awareness of the value and threats to CWR and WUS. We hope that the information presented here provides a starting point for advancing integrative conservation and sustainable use of these valuable plants.
 
 
 
