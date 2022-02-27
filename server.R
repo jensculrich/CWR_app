@@ -6,7 +6,7 @@
 # February 2022
 
 ########################################
-# DATA WRANGLING AND SUPPORT FUNCTIONS #
+# DATA INPUTS                          #
 ########################################
 
 # Load required data and shapefiles for building reactive maps and data tables
@@ -176,13 +176,15 @@ shinyServer(function(input, output, session){
         
         dplyr::select(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
                       PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC) %>%
+                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC,
+                      CATEGORY) %>%
         
         relocate(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
                  PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  TAXON, 
                  NATIVE, ROUNDED_N_RANK,
-                 COSEWIC_DESC) 
+                 COSEWIC_DESC,
+                 CATEGORY) 
       
     } else{
       filtered_data <- filter_data()
@@ -202,13 +204,15 @@ shinyServer(function(input, output, session){
         
         dplyr::select(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
                       PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC) %>%
+                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC,
+                      CATEGORY) %>%
         
         relocate(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
                  PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  TAXON, 
                  NATIVE, ROUNDED_N_RANK,
-                 COSEWIC_DESC) 
+                 COSEWIC_DESC,
+                 CATEGORY) 
       
     } # end else (ecoregions are chosen)
     
@@ -279,13 +283,14 @@ shinyServer(function(input, output, session){
                           "Crop", "Taxon", 
                           "Native", 
                           "Conservation Status",
-                          "COSEWIC Assessment"),
+                          "COSEWIC Assessment",
+                          "Category"),
              options = list(scrollX = TRUE))
   }) # end renderTable
   
-  ##########################
-  # Species level analysis #
-  ##########################
+  #################################
+  # 2) Species level gap analysis #
+  #################################
   
   # filter the data set for a CWR of interest
   observe({ 
@@ -461,7 +466,8 @@ shinyServer(function(input, output, session){
       dplyr::select(total_accessions_sp,
                     garden_accessions_w_finest_taxon_res,
                     genebank_accessions_w_finest_taxon_res,
-                    ROUNDED_N_RANK, COSEWIC_DESC)
+                    ROUNDED_N_RANK, COSEWIC_DESC,
+                    CATEGORY)
   
   })
   
@@ -531,7 +537,8 @@ shinyServer(function(input, output, session){
                            "Canadian, wild-origin accessions (BG)", 
                            "Canadian, wild-origin accessions (G)",
                            "Conservation Status",
-                           "COSEWIC Assessment"),
+                           "COSEWIC Assessment",
+                           "CATEGORY"),
               options = list(scrollX = TRUE))
   }) # end renderTable
   
