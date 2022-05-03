@@ -5,9 +5,9 @@ account: julrich
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5588239
-bundleId: 5629815
+bundleId: 5862830
 url: https://julrich.shinyapps.io/CWR_app/
-when: 1646159470.84244
-lastSyncTime: 1646159470.84244
+when: 1651545060.99853
+lastSyncTime: 1651545060.99853
 asMultiple: FALSE
 asStatic: FALSE

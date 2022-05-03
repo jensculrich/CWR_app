@@ -177,14 +177,14 @@ shinyServer(function(input, output, session){
         dplyr::select(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
                       PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                       TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC,
-                      CATEGORY) %>%
+                      CATEGORY, GENEPOOL) %>%
         
         relocate(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
                  PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  TAXON, 
                  NATIVE, ROUNDED_N_RANK,
                  COSEWIC_DESC,
-                 CATEGORY) 
+                 CATEGORY, GENEPOOL) 
       
     } else{
       filtered_data <- filter_data()
@@ -205,14 +205,14 @@ shinyServer(function(input, output, session){
         dplyr::select(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
                       PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                       TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC,
-                      CATEGORY) %>%
+                      CATEGORY, GENEPOOL) %>%
         
         relocate(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
                  PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  TAXON, 
                  NATIVE, ROUNDED_N_RANK,
                  COSEWIC_DESC,
-                 CATEGORY) 
+                 CATEGORY, GENEPOOL) 
       
     } # end else (ecoregions are chosen)
     
@@ -279,12 +279,13 @@ shinyServer(function(input, output, session){
   
   output$nativeRangeTable <- DT::renderDataTable({
     datatable(tableDataNativeRanges(), rownames = FALSE,
-             colnames = c("Region", "Category",
+             colnames = c("Region",
                           "Crop", "Taxon", 
                           "Native", 
                           "Conservation Status",
                           "COSEWIC Assessment",
-                          "Category"),
+                          "CATEGORY",
+                          "GENEPOOL"),
              options = list(scrollX = TRUE))
   }) # end renderTable
   
@@ -319,7 +320,7 @@ shinyServer(function(input, output, session){
     filtered_inventory <- filtered_inventory[order(filtered_inventory$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1),]
     
     updateSelectInput(session, "inSelectedUse",
-                      label = paste("Select a Crop Category"),
+                      label = paste("Select a Crop GENEPOOL"),
                       choices = filtered_inventory$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1
     ) # updateSelectInput
     
@@ -392,7 +393,8 @@ shinyServer(function(input, output, session){
     # update select input so that CWRs choices are the subset related to the specified Crop
     updateSelectInput(session, "inSelectedCWR",
                       label = paste("Select a CWR or WUS species"),
-                      choices = inventory_filtered$SPECIES
+                      choices = inventory_filtered$SPECIES,
+                      selected = NULL
     ) # updateSelectInput
     
   })
@@ -467,7 +469,7 @@ shinyServer(function(input, output, session){
                     garden_accessions_w_finest_taxon_res,
                     genebank_accessions_w_finest_taxon_res,
                     ROUNDED_N_RANK, COSEWIC_DESC,
-                    CATEGORY)
+                    CATEGORY, GENEPOOL)
   
   })
   
@@ -524,8 +526,8 @@ shinyServer(function(input, output, session){
       ) %>% 
       addLegend(pal = palette_for_points, values = ~INSTITUTION,
                 group = "circles", position = "bottomleft",
-                title = "wild-populations represented in genebank (G) and 
-                botanical garden (BG) ex situ conservation collections",
+                title = "origin of wild-collected accessions held in genebank (G) or 
+                botanical garden (BG) collections",
                 na.label = FALSE
       )
   })
@@ -538,7 +540,8 @@ shinyServer(function(input, output, session){
                            "Canadian, wild-origin accessions (G)",
                            "Conservation Status",
                            "COSEWIC Assessment",
-                           "CATEGORY"),
+                           "CATEGORY",
+                           "GENEPOOL"),
               options = list(scrollX = TRUE))
   }) # end renderTable
   
