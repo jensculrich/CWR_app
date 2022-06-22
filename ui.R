@@ -37,8 +37,7 @@ canada_provinces_geojson <- st_read("data/canada_provinces.geojson", quiet = TRU
 # The table has a row for each native province that a species is native to with garden = NA
 # along with a row for each garden accession from each native province.
 # ecoregion_gap_table has similar setup
-ecoregion_gap_table_t <- as_tibble(read.csv(
-  "data/ecoregion_gap_table_by_taxon.csv", encoding="ANSI"))
+ecoregion_gap_table_t <- as_tibble(read.csv("data/ecoregion_gap_table_by_taxon.csv"))
 
 dbHeader <- dashboardHeader(title = "My Dashboard",
                             tags$li(a(href = 'http://shinyapps.company.com',

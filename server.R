@@ -12,12 +12,9 @@
 # Load required data and shapefiles for building reactive maps and data tables
 canada_ecoregions_geojson <- st_read("data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("data/canada_provinces.geojson", quiet = TRUE)
-ecoregion_gap_table <- as.data.frame(read.csv(
-  "data/ecoregion_gap_table_by_species.csv", encoding="ANSI"))
-ecoregion_gap_table_t <- as.data.frame(read.csv(
-  "data/ecoregion_gap_table_by_taxon.csv", encoding="ANSI"))
-province_gap_table_t <- as.data.frame(read.csv(
-  "data/province_gap_table_by_taxon.csv", encoding="ANSI"))
+ecoregion_gap_table <- as.data.frame(read.csv("data/ecoregion_gap_table_by_species.csv"))
+ecoregion_gap_table_t <- as.data.frame(read.csv("data/ecoregion_gap_table_by_taxon.csv"))
+province_gap_table_t <- as.data.frame(read.csv("data/province_gap_table_by_taxon.csv"))
 
 
 ################
