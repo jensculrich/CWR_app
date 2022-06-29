@@ -6,7 +6,7 @@
 
 Learn more about CWR and WUS on the "What are CWR?" tab. Explore diversity on the "Find Native CWR" and "CWR Conservation" tabs
 
-This tool was designed to accompany a national inventory and conservation assessment of Canada's CWR and WUS diversity, [published here]()
+This tool was designed to accompany [a national inventory and conservation assessment of Canada's CWR and WUS diversity](https://doi.org/10.1002/csc2.20807)
 
 <p align="float">
   <img width="412.5" height="450" src="Vaccinium_corymbosum.jpg">
