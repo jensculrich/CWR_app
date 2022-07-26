@@ -320,7 +320,7 @@ shinyServer(function(input, output, session){
     filtered_inventory <- filtered_inventory[order(filtered_inventory$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1),]
     
     updateSelectInput(session, "inSelectedUse",
-                      label = paste("Select a Crop GENEPOOL"),
+                      label = paste("Select a Crop Category"),
                       choices = filtered_inventory$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1
     ) # updateSelectInput
     
@@ -356,7 +356,7 @@ shinyServer(function(input, output, session){
     inventory_filtered <- inventory_filtered[order(inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME),]    
     # update select input so that CWRs choices are the subset related to the specified Crop
     updateSelectInput(session, "inSelectedCrop",
-                      label = paste("Select a Crop or WUS genus"),
+                      label = paste("Select a Crop or WUS Genepool"),
                       choices = inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME
     ) # updateSelectInput
     
@@ -392,7 +392,7 @@ shinyServer(function(input, output, session){
     inventory_filtered <- inventory_filtered[order(inventory_filtered$PRIMARY_ASSOCIATED_CROP_COMMON_NAME),]    
     # update select input so that CWRs choices are the subset related to the specified Crop
     updateSelectInput(session, "inSelectedCWR",
-                      label = paste("Select a CWR or WUS species"),
+                      label = paste("Select a CWR or WUS"),
                       choices = inventory_filtered$SPECIES,
                       selected = NULL
     ) # updateSelectInput
