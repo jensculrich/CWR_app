@@ -285,7 +285,7 @@ shinyServer(function(input, output, session){
                           "Conservation Status",
                           "COSEWIC Assessment",
                           "CATEGORY",
-                          "GENEPOOL"),
+                          "Genetic distance"),
              options = list(scrollX = TRUE))
   }) # end renderTable
   
@@ -541,7 +541,7 @@ shinyServer(function(input, output, session){
                            "Conservation Status",
                            "COSEWIC Assessment",
                            "CATEGORY",
-                           "GENEPOOL"),
+                           "Genetic distance"),
               options = list(scrollX = TRUE))
   }) # end renderTable
   
