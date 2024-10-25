@@ -254,7 +254,7 @@ shinyServer(function(input, output, session){
                                                       bringToFront = T)) %>%
       addLegend(pal=mypalette, values=~variable, 
                 opacity=0.9, title = plot_title, position = "bottomleft" )
-    
+  
   }) # end renderPlot
   
   observe({
@@ -265,29 +265,29 @@ shinyServer(function(input, output, session){
       filter(region == input$inRegion)
     
     leafletProxy("choroplethPlot", data = mydat) %>%
-      addPolygons(fillOpacity = 0.5, 
-                  smoothFactor = 0.5, 
-                  color = ~colorNumeric("YlOrBr", variable)(variable),
-                  layerId = ~region,
-                  highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
-                                                      bringToFront = T))
+        addPolygons(fillOpacity = 0.5, 
+                smoothFactor = 0.5, 
+                color = ~colorNumeric("YlOrBr", variable)(variable),
+                layerId = ~region,
+                highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
+                                                    bringToFront = T))
     
     leafletProxy("choroplethPlot", data = filtered_dat) %>%
       addPolygons(layerId = ~region)
-    
-    
+      
+  
   })
   
   output$nativeRangeTable <- DT::renderDataTable({
     datatable(tableDataNativeRanges(), rownames = FALSE,
-              colnames = c("Region",
-                           "Crop", "Taxon", 
-                           "Native", 
-                           "Conservation Status",
-                           "COSEWIC Assessment",
-                           "CATEGORY",
-                           "Genetic distance"),
-              options = list(scrollX = TRUE))
+             colnames = c("Region",
+                          "Crop", "Taxon", 
+                          "Native", 
+                          "Conservation Status",
+                          "COSEWIC Assessment",
+                          "CATEGORY",
+                          "Genetic distance"),
+             options = list(scrollX = TRUE))
   }) # end renderTable
   
   #################################
@@ -372,7 +372,7 @@ shinyServer(function(input, output, session){
     } else if(xxxx == "Forest resources"){
       filtered_inventory <- ecoregion_gap_table_t %>%
         filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 == "Forest Resources"|
-                 PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
+               PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2 == "Forest Resources") %>%
         mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = "Forest Resources")
     } else if(xxxx == "Forage and feed crops"){
       filtered_inventory <- ecoregion_gap_table_t %>%
@@ -471,7 +471,7 @@ shinyServer(function(input, output, session){
                     genebank_accessions_w_finest_taxon_res,
                     ROUNDED_N_RANK, COSEWIC_DESC,
                     CATEGORY, GENEPOOL)
-    
+  
   })
   
   output$choroplethPlot2 <- renderLeaflet({
@@ -483,7 +483,7 @@ shinyServer(function(input, output, session){
       filter(!is.na(binary)) %>%
       mutate(label_text = ifelse(binary == 1, "Yes", "No")) %>%
       mutate(binary = as.factor(binary))
-    
+      
     mypalette_discrete <- colorFactor(c("gray80", "gray18"), c("0", "1"))
     
     # Prepare the text for tooltips:
@@ -503,7 +503,7 @@ shinyServer(function(input, output, session){
                   fillColor = ~mypalette_discrete(binary),
                   label = mytext,
                   layerId = ~ECO_NAME) # %>%
-    
+      
   }) # end renderPlot
   
   observe({

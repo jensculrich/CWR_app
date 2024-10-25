@@ -11,6 +11,7 @@
 
 library(shiny)
 library(sf) # the base package manipulating shapes
+#library(spdplyr) # the `dplyr` counterpart for shapes
 library(dplyr) # data wrangling
 library(tidyverse) # data wrangling
 library(tigris) # for joining spatial data with data frame classes
@@ -69,10 +70,10 @@ ui <- fluidPage(
       
       sidebarMenu(
         menuItem("Home", tabName = "home", icon = icon("home")),
-        menuItem("What Are CWR?", tabName = "about", icon = icon("seedling")),
+        menuItem("What are CWR?", tabName = "about", icon = icon("seedling")),
         menuItem("Find Native CWR", tabName = "find", icon = icon("thumbtack")),
         menuItem("Identify Conservation Gaps", tabName = "explore", icon = icon("table")),
-        menuItem("Wild Canadian Apples", tabName = "explore", icon = icon("apple")),
+        menuItem("Wild Canadian Apples", tabName = "apple", icon = icon("apple")),
         menuItem("About", tabName = "aknow", icon = icon("tasks"))
         
       ) # end sidebarMenu
@@ -128,6 +129,7 @@ ui <- fluidPage(
                   
         ), # end third tabItem element
         
+        # Fourth tab element
         tabItem(tabName = "explore",
                 
                 includeMarkdown("www/explore.md"),
@@ -171,7 +173,7 @@ ui <- fluidPage(
                 
         ), # end fourth tabItem element
         
-        # Fourth tab element
+        # Fifth tab element
         tabItem(tabName = "apple",
                 
                 includeMarkdown("www/apple.md"),
@@ -189,7 +191,7 @@ ui <- fluidPage(
                     # user chooses an emissions scenario of interest
                     selectInput("inSelectedEmissions", "Select an emissions scenario", 
                                 choices = c("reduced (ssp245)", "business as usual (ssp585)"),
-                                selected = ""
+                                            selected = ""
                     ), # end select input
                     # user chooses a time projection of interest
                     selectInput("inSelectedProjection", "Select a time projection", 
@@ -202,6 +204,10 @@ ui <- fluidPage(
                     ) # end select input
                   ), # end box
                   
+                  box(#title = "Range map", solidHeader = T,
+                    width = 8, collapsible = T,
+                    leafletOutput("choroplethPlot3")
+                  ) # end box
                   
                 ) # end fluidRow
                 
