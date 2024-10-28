@@ -551,230 +551,74 @@ shinyServer(function(input, output, session){
   #  3) Apple SDMs   #  
   ####################
   
-  # and then generate a map and a table of native CWR by region focus
-  construct_plot_index <- reactive({
+  # generate an apple sdm based on user inputs
+  applePlotData <- reactive({ 
     
-    x <- input$inAppleSpecies
+    a <- input$inAppleSpecies
     
-    stringy <- string()
-    if(x == "Malus fusca"){
-      stringy = "cor_pred"
+    if(a == "Malus coronaria (sweet crabapple)"){
+      stringy1 = "cor_pred"
     } else {
-      stringy = "fus_pred"
+      stringy1 = "fus_pred"
     }
+    
+    b <- input$inSelectedEmissions
+    
+    if(b == "low (ssp245)"){
+      stringy2 = "ssp245"
+    } else {
+      stringy2 = "ssp585"
+    }
+    
+    c <- input$inSelectedProjection
+    
+    if(c == "2030"){
+      stringy3 = "30"
+    } else if(c == "2050") {
+      stringy3 = "50"
+    } else{
+      stringy3 = "70"
+    }
+    
+    d <- input$inSelectedHabitatSuitability
+    
+    if(d == "high"){
+      stringy4 = "high"
+    } else if(d == "moderate to high") {
+      stringy4 = "mod"
+    } else{
+      stringy4 = "low"
+    }
+    
+    stringy_cat <- paste0(stringy1, "_", stringy4, "_", stringy2, "_", stringy3)
+    
+    r <- raster::raster(readRDS(paste0("./data/apples/", stringy_cat, ".Rdata")))
+    
+    r[r[] < 1 ] = NA 
+    
+    return(r)
     
   })
   
+  #output$choroplethPlot3 <- renderPlot({
+   # plot(applePlotData()) 
+  #})
   
-  # allow user to click on a polygon (region) and filter the CWR table to that region
-  observe({ 
-    
-    ## give the user the ability to choose by hovering on the map
-    event <- input$choroplethPlot_shape_click
-    updateSelectInput(session, inputId = "inRegion", selected = event$id)
-    
-    z <- input$inNativeProvincesOrEcoregions
-    if(z == "Ecoregions"){
-      ecoregion_gap_table <- with(ecoregion_gap_table,  ecoregion_gap_table[order(ECO_NAME) , ])
-      updateSelectInput(session, "inRegion", 
-                        choices = ecoregion_gap_table$ECO_NAME,
-                        selected = NULL)
-      
-      ## give the user the ability to choose by hovering on the map
-      event <- input$choroplethPlot_shape_click
-      updateSelectInput(session, inputId = "inRegion", selected = event$id)
-    } else {z
-      province_gap_table_t <- with(province_gap_table_t,  province_gap_table_t[order(PROVINCE) , ])
-      updateSelectInput(session, "inRegion", 
-                        choices = province_gap_table_t$PROVINCE,
-                        selected = NULL)
-      
-      ## give the user the ability to choose by hovering on the map
-      event <- input$choroplethPlot_shape_click
-      updateSelectInput(session, inputId = "inRegion", selected = event$id)
-    } 
-    
-  }) 
-  
-  # native range tab outputs: plot and table
-  
-  # get plot data
-  plotDataNativeRanges <- reactive({
-    if(input$inNativeProvincesOrEcoregions == "Provinces"){
-      filtered_data <- filter_data_province()
-      
-      native_occurrence_heatmap_ecoregion <- filtered_data %>%
-        # group by ecoregion
-        dplyr::group_by(PROVINCE) %>%
-        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
-        # distinct (since when there are >1 accessions for a species from the province the 
-        # row gets expanded. We just want a count of one row per species found in the province)
-        distinct(TAXON, .keep_all = TRUE) %>%
-        # tally the number of species
-        add_tally() %>%
-        rename("variable" = "n") 
-      
-      native_occurrence_sf_ecoregions <- tigris::geo_join(canada_provinces_geojson, native_occurrence_heatmap_ecoregion, 
-                                                          by_sp = "name", by_df = "PROVINCE")
-      
-      native_occurrence_sf_ecoregions <- native_occurrence_sf_ecoregions %>%
-        rename("region" = "name")
-      
-    } else{ # end if (provinces are chosen)
-      filtered_data <- filter_data()
-      
-      native_occurrence_heatmap_ecoregion <- filtered_data %>%
-        # group by ecoregion
-        dplyr::group_by(ECO_NAME) %>%
-        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
-        # distinct (since when there are >1 accessions for a species from the province the 
-        # row gets expanded. We just want a count of one row per species found in the province)
-        distinct(TAXON, .keep_all = TRUE) %>%
-        # tally the number of species
-        add_tally() %>%
-        rename("variable" = "n") 
-      
-      native_occurrence_sf_ecoregions <- tigris::geo_join(canada_ecoregions_geojson, native_occurrence_heatmap_ecoregion, 
-                                                          by_sp = "ECO_NAME", by_df = "ECO_NAME")
-      
-      native_occurrence_sf_ecoregions <- native_occurrence_sf_ecoregions %>%
-        rename("region" = "ECO_NAME")
-    } # end else (ecoregions are chosen)
-    
-  }) # end get plot data
-  
-  # get table data
-  tableDataNativeRanges <- reactive({
-    
-    if(input$inNativeProvincesOrEcoregions == "Provinces"){
-      filtered_data <- filter_data_province()
-      
-      native_occurrence_heatmap_ecoregion <- filtered_data %>%
-        # filter the table to the selected region
-        filter(PROVINCE == input$inRegion) %>%
-        # group by ecoregion
-        dplyr::group_by(PROVINCE) %>%
-        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
-        # distinct (since when there are >1 accessions for a species from the province the 
-        # row gets expanded. We just want a count of one row per species found in the province)
-        distinct(TAXON, .keep_all = TRUE) %>%
-        # tally the number of species
-        add_tally() %>%
-        rename("variable" = "n") %>%
-        
-        dplyr::select(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-                      PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC,
-                      CATEGORY, GENEPOOL) %>%
-        
-        relocate(PROVINCE, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
-                 PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                 TAXON, 
-                 NATIVE, ROUNDED_N_RANK,
-                 COSEWIC_DESC,
-                 CATEGORY, GENEPOOL) 
-      
-    } else{
-      filtered_data <- filter_data()
-      
-      native_occurrence_heatmap_ecoregion <- filtered_data %>%
-        # filter the table to the selected region
-        filter(ECO_NAME == input$inRegion) %>%
-        # group by ecoregion
-        dplyr::group_by(ECO_NAME) %>%
-        filter(FINEST_TAXON_RESOLUTION == "Y") %>%
-        # distinct (since when there are >1 accessions for a species from the province the 
-        # row gets expanded. We just want a count of one row per species found in the province)
-        distinct(TAXON, .keep_all = TRUE) %>%
-        # tally the number of species
-        add_tally() %>%
-        rename("variable" = "n") %>%
-        
-        dplyr::select(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-                      PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                      TAXON, NATIVE, ROUNDED_N_RANK, COSEWIC_DESC,
-                      CATEGORY, GENEPOOL) %>%
-        
-        relocate(ECO_NAME, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
-                 PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                 TAXON, 
-                 NATIVE, ROUNDED_N_RANK,
-                 COSEWIC_DESC,
-                 CATEGORY, GENEPOOL) 
-      
-    } # end else (ecoregions are chosen)
-    
-  }) # end get table data
-  
-  output$choroplethPlot <- renderLeaflet({
-    
-    # get data 
-    mydat <- plotDataNativeRanges()    
-    
-    # Create a color palette for the map:
-    mypalette <- colorNumeric( palette="YlOrBr", domain=mydat$variable, na.color="transparent")
-    mypalette(c(45,43))
-    
-    # Prepare the text for tooltips:
-    mytext <- paste(
-      "Region: ", mydat$region,"<br/>", 
-      "CWR: ", mydat$variable, "<br/>", 
-      sep="") %>%
-      lapply(htmltools::HTML)
-    
-    if(input$inSelectedGroup == "Wild-utilized plant species") {
-      plot_title = "WUS"
-    } else{
-      plot_title = "CWR"
-    }
+  output$choroplethPlot3 <- renderLeaflet({
     
     # Basic choropleth with leaflet
-    leaflet(plotDataNativeRanges()) %>% 
-      addTiles()  %>% 
-      setView(lat=60, lng=-98 , zoom=3) %>%
-      addPolygons(fillOpacity = 0.5, 
-                  smoothFactor = 0.5, 
-                  color = ~colorNumeric("YlOrBr", variable)(variable),
-                  label = mytext,
-                  layerId = ~region,
-                  highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
-                                                      bringToFront = T)) %>%
-      addLegend(pal=mypalette, values=~variable, 
-                opacity=0.9, title = plot_title, position = "bottomleft" )
+    leaflet() %>% 
+      addTiles() %>%
+      setView(lat=45, lng=-98 , zoom=3.5)  
     
   }) # end renderPlot
   
   observe({
-    
-    # highlighted_region = input$inRegion
-    mydat <- plotDataNativeRanges()
-    filtered_dat <- mydat %>%
-      filter(region == input$inRegion)
-    
-    leafletProxy("choroplethPlot", data = mydat) %>%
-      addPolygons(fillOpacity = 0.5, 
-                  smoothFactor = 0.5, 
-                  color = ~colorNumeric("YlOrBr", variable)(variable),
-                  layerId = ~region,
-                  highlightOptions = highlightOptions(color = "Grey", stroke = 4, weight = 15,
-                                                      bringToFront = T))
-    
-    leafletProxy("choroplethPlot", data = filtered_dat) %>%
-      addPolygons(layerId = ~region)
-    
-    
+    leafletProxy("choroplethPlot3") %>%
+    clearImages() %>%
+      addRasterImage(applePlotData(),
+                     colors = "blue",
+                     opacity = 0.5)
   })
-  
-  output$nativeRangeTable <- DT::renderDataTable({
-    datatable(tableDataNativeRanges(), rownames = FALSE,
-              colnames = c("Region",
-                           "Crop", "Taxon", 
-                           "Native", 
-                           "Conservation Status",
-                           "COSEWIC Assessment",
-                           "CATEGORY",
-                           "Genetic distance"),
-              options = list(scrollX = TRUE))
-  }) # end renderTable
-  
-}) # server
+    
+}) # shinyServer

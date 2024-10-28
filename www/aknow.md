@@ -1,7 +1,5 @@
 # About
-This web app was designed and created in 2021/2022 by Jens Ulrich & Erika Luna Perez, and accompanies the paper ["An inventory of crop wild relatives and wild-utilized plants in Canada"](https://doi.org/10.1002/csc2.20807); which was co-authored by Jens Ulrich (University of British Columbia), Erika Luna Perez (University of British Columbia), Kephra Beckett (University of British Columbia), Lili Simon (University of British Columbia), Zoë Migicovsky (Dalhousie University), Tara Moreau (University of British Columbia Botanical Garden), Axel Diederichsen (Agriculture and Agri-Food Canada - Plant Gene Resources Canada) and Colin Khoury (San Diego Botanic Garden, International Center for Tropical Agriculture (CIAT)).
-
-Further review focused on berry fruit CWR found in Canada, including an examination of in situ conservation status, can be found in ["Berries as a case study for crop wild relative conservation, use, and public engagement in Canada (Migicovsky et al., In press)"]()
+This shiny app is designed and maintained by Jens Ulrich. Many contributors have helpfully provided input and feedback, including the coauthors of the accompanying research articles [1](https://doi.org/10.1002/csc2.20807) and [2](https://doi.org/10.1002/ppp3.10291) 
 
 ## Future Directions
 If you have suggestions for improving the utility or accessibility of this tool, please contact jensj27[at]mail.ubc.ca
@@ -12,7 +10,7 @@ The ex situ accessions displayed on the conservation tab are a snaphsot from 202
 
 We acknowledge that this work has been conducted on the ancestral and unceded lands of all the Indigenous Peoples (Inuit, Métis, and First Nations) who steward Canada’s biodiversity, including the diversity of CWR and WUS in that may be explored through this web application. 
 
-## CWR and WUS collection data was contributed by: 
+## CWR and WUS ex situ collection data was contributed by: 
 7 botanical gardens from across Canada - Montreal Botanic Garden (Montreal, QC), the University of Guelph Arboretum (Guelph, ON), the Royal Botanical Gardens (Burlington, ON), Mount Pleasant Cemetery Gardens (Toronto, ON), University of British Columbia Botanical Garden (Vancouver, BC), VanDusen Botanical Garden (Vancouver, BC) and Reader Rock Garden (Calgary, AB).
 
 Collections data from genebanks was gathered directly through publicly available databases: 
@@ -23,5 +21,3 @@ Collections data from genebanks was gathered directly through publicly available
 
 ### Information on conservation status was helpfully provided by:
 [NatureServe Canada](https://www.natureserve.org/)
-
-We would also like to thank Claire Kremen, Angela Brennan, Abby Meyer, Amie Enns, Anne Francis, Nancy Turner and the Berry Bunch for feedback and suggestions

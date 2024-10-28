@@ -14,6 +14,7 @@ library(sf) # the base package manipulating shapes
 library(dplyr) # data wrangling
 library(tidyverse) # data wrangling
 library(tigris) # for joining spatial data with data frame classes
+library(raster)
 library(leaflet)
 library(htmltools)
 library(shinydashboard)
@@ -38,16 +39,7 @@ canada_provinces_geojson <- st_read("data/canada_provinces.geojson", quiet = TRU
 # ecoregion_gap_table has similar setup
 ecoregion_gap_table_t <- as_tibble(read.csv("data/ecoregion_gap_table_by_taxon.csv"))
 
-dbHeader <- dashboardHeader(title = "My Dashboard",
-                            tags$li(a(href = 'http://shinyapps.company.com',
-                                      icon("power-off"),
-                                      title = "Back to Apps Home"),
-                                    class = "dropdown"),
-                            tags$li(a(href = 'http://www.company.com',
-                                      img(src = 'ubc.png',
-                                          title = "Company Home", height = "30px"),
-                                      style = "padding-top:10px; padding-bottom:10px;"),
-                                    class = "dropdown"))
+
 
 ###########
 # LOAD UI #
@@ -61,9 +53,9 @@ ui <- fluidPage(
   
   dashboardPage(
     
-    skin = "purple",
+    skin = "blue",
     
-    dashboardHeader(title = "Conservation of Crop Wild Relatives (CWR) and Wild-utilized Plants (WUS) in Canada", titleWidth = 1000),
+    dashboardHeader(title = "Crop Wild Relatives (CWR) and Wild-utilized Plants (WUS) in Canada", titleWidth = 1000),
     
     dashboardSidebar(
       
@@ -71,12 +63,12 @@ ui <- fluidPage(
         menuItem("Home", tabName = "home", icon = icon("home")),
         menuItem("What Are CWR?", tabName = "about", icon = icon("seedling")),
         menuItem("Find Native CWR", tabName = "find", icon = icon("thumbtack")),
-        menuItem("Identify Conservation Gaps", tabName = "explore", icon = icon("table")),
-        menuItem("Wild Canadian Apples", tabName = "explore", icon = icon("apple")),
+        menuItem("Identify CWR Conservation Gaps", tabName = "explore", icon = icon("table")),
+        menuItem("CWR Species Distribution Models", tabName = "apple", icon = icon("apple")),
         menuItem("About", tabName = "aknow", icon = icon("tasks"))
-        
-      ) # end sidebarMenu
+      ), # end sidebarMenu
       
+      width = 300         
     ), # end dashboardSidebar
     
     dashboardBody(
@@ -183,27 +175,41 @@ ui <- fluidPage(
                     
                     # want to update this so it's dependent on users choice of provinces v. ecoregions
                     # user chooses a species of interest
-                    selectInput("inAppleSpecies", "Select a wild apple species", 
-                                choices = c("Malus fusca", "Malus coronaria")
+                    selectInput("inAppleSpecies", "Select an apple CWR species", 
+                                choices = c("Malus coronaria (sweet crabapple)", 
+                                            "Malus fusca (Pacific crabapple)", 
+                                            ""),
+                                selected = ""
                     ), # end select input
                     # user chooses an emissions scenario of interest
                     selectInput("inSelectedEmissions", "Select an emissions scenario", 
-                                choices = c("reduced (ssp245)", "business as usual (ssp585)"),
+                                choices = c("low (ssp245)", "high (ssp585)"),
                                 selected = ""
                     ), # end select input
                     # user chooses a time projection of interest
                     selectInput("inSelectedProjection", "Select a time projection", 
-                                choices = "", selected = ""
+                                choices = c("2030", "2050", "2070"),
+                                selected = ""
                     ), # end select input
                     # user chooses a habitat suitability degree
                     # update this so that user can choose a CWR without first selecting crop
                     selectInput("inSelectedHabitatSuitability", "Select degree of habitat suitability", 
-                                choices = "", selected = ""
+                                choices = c("",
+                                            "low to high", 
+                                            "moderate to high", 
+                                            "high"),
+                                selected = "moderate to high"
                     ) # end select input
                   ), # end box
                   
+                  box(#title = "Range map", solidHeader = T,
+                    width = 8, collapsible = T,
+                    leafletOutput("choroplethPlot3")
+                  ) # end box
                   
-                ) # end fluidRow
+                ), # end fluidRow
+                
+                includeMarkdown("www/apple2.md")
                 
         ), # end fifth tabItem element
         

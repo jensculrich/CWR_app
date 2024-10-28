@@ -6,7 +6,9 @@
 
 Learn more about CWR and WUS on the "What are CWR?" tab. Explore diversity on the "Find Native CWR" and "CWR Conservation" tabs
 
-This tool was designed to accompany [a national inventory and conservation assessment of Canada's CWR and WUS diversity](https://doi.org/10.1002/csc2.20807)
+This tool was designed to accompany research on Canadian CWR, including:
+- ["An inventory of crop wild relatives and wild-utilized plants in Canada" (Ulrich et al., 2022)](https://doi.org/10.1002/csc2.20807)
+- ["Berries as a case study for crop wild relative conservation, use, and public engagement in Canada" (Migicovsky et al., 2022)](https://doi.org/10.1002/ppp3.10291)
 
 <p align="float">
   <img width="412.5" height="450" src="Vaccinium_corymbosum.jpg">
@@ -14,7 +16,7 @@ This tool was designed to accompany [a national inventory and conservation asses
 </p>
 Image: 
 
-left: Cultivated highbush blueberry, <i> Vaccinium corymbosum </i> [public domain](https://commons.wikimedia.org/wiki/File:Vaccinium_corymbosum(01\).jpg)
+left: Cultivated highbush blueberry, <i> Vaccinium corymbosum </i> [public domain](https://commons.wikimedia.org/wiki/File:Vaccinium_corymbosum(01).jpg)
 
 right: Nationally imperiled CWR of blueberry, <i> Vaccinium stamineum  </i> ("deerberry") [public domain](https://commons.wikimedia.org/wiki/File:Vaccineum_stamineum_1120600.jpg)
 
