@@ -1,5 +1,3 @@
-library(raster)
-
 rData <- readRDS(paste0("./data/apples/fus_pred_mod_ssp245_30.Rdata"))
 plot(rData)
 str(rData)
