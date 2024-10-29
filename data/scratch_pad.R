@@ -1,8 +1,10 @@
+library(terra)
+
 rData <- readRDS(paste0("./data/apples/fus_pred_mod_ssp245_30.Rdata"))
 plot(rData)
 str(rData)
-
-r <- raster::raster(rData)
+library(raster)
+r <- raster(rData)
 
 r[r[] < 1 ] = NA 
 

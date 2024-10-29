@@ -19,5 +19,5 @@ Collections data from genebanks was gathered directly through publicly available
 * [U Sask Prairie Fruit Genebank - Canada](https://research-groups.usask.ca/fruit/extension-events-/gene-Bank/gene-bank.php#:~:text=The%20Prairie%20Fruit%20Genebank(PFG,to%20life%20on%20the%20Prairies.)
 * [USDA-ARS National Germplasm System - United States](https://npgsweb.ars-grin.gov/gringlobal/taxon/taxonomysearchcwr)
 
-### Information on conservation status was helpfully provided by:
+### Information on conservation status was provided by:
 [NatureServe Canada](https://www.natureserve.org/)

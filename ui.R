@@ -13,12 +13,15 @@ library(shiny)
 library(sf) # the base package manipulating shapes
 library(dplyr) # data wrangling
 library(tidyverse) # data wrangling
-library(tigris) # for joining spatial data with data frame classes
+#library(tigris) # for joining spatial data with data frame classes
+#options(tigris_use_cache = TRUE)
 library(raster)
+library(terra)
 library(leaflet)
 library(htmltools)
 library(shinydashboard)
 library(DT)
+library(markdown)
 
 ########################################
 # DATA WRANGLING AND SUPPORT FUNCTIONS #
